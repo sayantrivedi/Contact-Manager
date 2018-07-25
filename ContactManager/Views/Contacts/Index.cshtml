@@ -1,0 +1,169 @@
+﻿@model IEnumerable<ContactManager.Models.Contact>
+@using GridMvc.Html;
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Styles
+{
+    <style>
+        thead {
+            background-color: black;
+        }
+
+        th {
+            color: #337ab7;
+        }
+    </style>
+
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        function confirmDelete() {
+            var flag = 0;
+            var selected = [], j = 0;
+            var cbs = document.getElementsByName("checked");
+            for (i = 0; i < cbs.length; i++) {
+                if (cbs[i].checked) {
+                    flag = 1;
+                    selected[j++] = cbs[i].id;
+                }
+            }
+            
+            if (flag == 0)
+                return confirm("Do you really want to delete the entry?");
+            else
+                return confirm("Do you really want to delete the entries with id(s) " + selected + " ?");
+
+        }
+
+        function beforeSubmit(id){
+            var cb = document.getElementById(id);
+            cb.checked = true;
+        }
+
+
+
+    </script>
+}
+
+
+<h2>All Contacts</h2>
+<h3>@ViewBag.Status</h3>
+
+<link href="~/Content/Gridmvc.css" rel="stylesheet" />
+
+<div class="code-cut">
+    @using (@Html.BeginForm("Delete", "Contacts", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return confirmDelete()" }))
+    {
+
+        @Html.Grid(Model).Columns(columns =>
+                    {
+                        columns.Add()
+                            .Encoded(false)
+                            .Sanitized(false)
+                            .SetWidth(5)
+                            .RenderValueAs(c => Html.CheckBox("checked", false, new { @id = c.Id, @value = c.Id, style = "display:none" }));
+                        columns.Add(c => c.FirstName).Titled("First Name").Filterable(true);
+                        columns.Add(c => c.LastName).Titled("Last Name").Filterable(true);
+                        columns.Add(c => c.Address).Titled("Address").Filterable(true);
+                        columns.Add(c => c.City).Titled("City").Filterable(true);
+                        columns.Add(c => c.State).Titled("State").Filterable(true);
+                        columns.Add(c => c.PostalCode).Titled("Postal Code").Filterable(true);
+                        columns.Add(c => c.PhoneNumber).Titled("Phone Number").Filterable(true);
+                        columns.Add(c => c.Email).Titled("Email").Filterable(true);
+                        columns.Add(c => c.Status).Titled("Status").Filterable(true);
+                        columns.Add()
+                            .Encoded(false)
+                            .Sanitized(false)
+                            .SetWidth(30)
+                            .RenderValueAs(o => Html.ActionLink("Edit", "Edit", new { Id = o.Id, FirstName = o.FirstName, LastName = o.LastName, City = o.City,State = o.State, PhoneNumber = o.PhoneNumber, PostalCode = o.PostalCode, Status = o.Status, Email = o.Email, Address = o.Address}));
+
+                        columns.Add()
+                            .Encoded(false)
+                            .Sanitized(false)
+                            .SetWidth(30)
+                            .RenderValueAs(o => @<input type="submit" value="Delete" onclick="beforeSubmit(@o.Id)" class="btn btn-default" />);
+
+                    }).WithPaging(50).Sortable(true)
+    }
+</div>
+
+
+
+
+
+
+
+
+@*<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostalCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostalCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            </td>
+        </tr>
+    }
+
+    </table>*@
